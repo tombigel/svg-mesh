@@ -11,3 +11,64 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+:root {
+  --blur-factor: 4;
+}
+
+#main {
+  padding: 20px;
+  display: grid;
+  grid-template: 1fr / auto 1fr;
+  gap: 20px;
+}
+
+#controls {
+  justify-self: end
+}
+
+#controls label{
+  display: block;
+  padding: 10px 0;
+}
+
+#controls label span{
+  display: block;
+}
+
+#controls button {
+  font-size: 14px;
+  padding: 3px 10px;
+}
+#stage {
+  position: relative;
+  outline: 1px solid #000;
+  user-select: none;
+  justify-self: start;
+}
+#stage .point {
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  margin: -5px 0 0 -5px;
+  box-sizing: border-box;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  user-select: none;
+}
+
+#stage .point[data-selected] {
+  width: 15px;
+  height: 15px;
+  margin: -7px 0 0 -7px;
+  border-width: 4px;
+}
+
+#stage svg {
+  pointer-events: none;
+}
+
+#popup-color-picker{
+  position: absolute;
+}
