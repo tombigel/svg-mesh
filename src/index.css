@@ -24,7 +24,7 @@ code {
 }
 
 #controls {
-  justify-self: end
+  justify-self: start
 }
 
 #controls label{
@@ -54,7 +54,7 @@ code {
   box-sizing: border-box;
   border: 2px solid #fff;
   border-radius: 50%;
-  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
   user-select: none;
 }
 
@@ -71,4 +71,8 @@ code {
 
 #popup-color-picker{
   position: absolute;
+}
+
+#project-link {
+  grid-area: 2 / 1 / 2 / 3;
 }

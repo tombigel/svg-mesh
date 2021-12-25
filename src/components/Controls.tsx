@@ -70,11 +70,11 @@ export const Controls = ({
   const point = points[selected];
   return (
     <div id="controls">
-      <h2>Selected Point</h2>
+      <h3>Selected</h3>
       <input type="color" value={point?.color} onChange={handleColor} />
       &nbsp;&nbsp;
       <button onClick={handleDelete}>Delete</button>
-      <h2>General</h2>
+      <h3>Filters</h3>
       <label>
         <span>stdDeviation</span>
         <input
