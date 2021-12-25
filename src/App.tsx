@@ -36,6 +36,7 @@ function App() {
         slope={slope}
         intercept={intercept}
       />
+      <a href="https://github.com/tombigel/svg-mesh">https://github.com/tombigel/svg-mesh</a>
     </div>
   );
 }
