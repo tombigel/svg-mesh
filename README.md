@@ -81,3 +81,4 @@ MIT
 - [d3-delaunay](https://github.com/d3/d3-delaunay) for Voronoi diagram generation
 - [Vite](https://vitejs.dev) for build tooling
 - [Vitest](https://vitest.dev) for testing
+  
