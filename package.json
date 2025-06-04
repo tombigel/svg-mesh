@@ -1,37 +1,85 @@
 {
   "name": "svg-mesh",
+  "description": "A React library for creating interactive Voronoi gradient meshes using SVG, d3-delaunay, and CSS filters",
   "homepage": "https://tombigel.github.io/svg-mesh",
   "version": "0.1.0",
   "private": true,
-  "dependencies": {
-    "@testing-library/jest-dom": "^5.16.1",
-    "@testing-library/react": "^12.1.2",
-    "@testing-library/user-event": "^13.5.0",
-    "@types/jest": "^27.0.3",
-    "@types/node": "^16.11.17",
-    "@types/react": "^17.0.38",
-    "@types/react-dom": "^17.0.11",
-    "d3-delaunay": "^6.0.2",
-    "gh-pages": "^3.2.3",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-scripts": "5.0.0",
-    "typescript": "^4.5.4",
-    "web-vitals": "^2.1.2"
+  "type": "module",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/es/index.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/es/index.js",
+      "require": "./dist/cjs/index.js",
+      "types": "./dist/types/index.d.ts"
+    }
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "dev": "vite",
+    "build": "vite build",
+    "build:lib": "vite build --config vite.lib.config.ts",
+    "build:demo": "vite build",
+    "clean": "rimraf dist build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "preview": "vite preview",
+    "predeploy": "npm run build:demo",
+    "deploy": "gh-pages -d build",
+    "version:patch": "npm version patch -m \"Release patch version %s\"",
+    "version:minor": "npm version minor -m \"Release minor version %s\"",
+    "version:major": "npm version major -m \"Release major version %s\"",
+    "prepublishOnly": "npm run clean && npm run build:lib",
+    "release": "npm run test && npm run version:patch && git push --follow-tags origin main && npm publish && npm run deploy"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+  "dependencies": {
+    "d3-delaunay": "^6.0.4"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^14.1.2",
+    "@testing-library/user-event": "^14.5.1",
+    "@types/d3-delaunay": "^6.0.4",
+    "@types/node": "^20.10.5",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "@vitest/coverage-v8": "^1.1.0",
+    "eslint": "^8.56.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "gh-pages": "^6.1.0",
+    "jsdom": "^23.0.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "rimraf": "^5.0.5",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.10",
+    "vite-plugin-dts": "^3.6.4",
+    "vitest": "^1.1.0"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
+  "keywords": [
+    "svg",
+    "voronoi",
+    "mesh",
+    "gradient",
+    "react",
+    "typescript"
+  ],
+  "author": "Tom Bigelajzen <tombigel@gmail.com> (https://github.com/tombigel)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tombigel/svg-mesh.git"
   },
   "browserslist": {
     "production": [
@@ -44,8 +92,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@types/d3-delaunay": "^6.0.0"
   }
 }
