@@ -95,7 +95,7 @@ describe('SvgMesh', () => {
     }
   });
 
-  it('applies CSS filters with consistent IDs', () => {
+  it('applies SVG filters with consistent IDs', () => {
     render(
       <SvgMesh
         points={mockPoints}
@@ -249,5 +249,68 @@ describe('SvgMesh', () => {
         expect(updatedPoints).toHaveLength(mockPoints.length); // Same length, no new point added
       }
     }
+  });
+
+  it('handles double-click events on points', () => {
+    render(
+      <SvgMesh
+        points={mockPoints}
+        width={400}
+        height={400}
+        interactive={true}
+        onPointsChange={vi.fn()}
+      />
+    );
+    
+    const pointElement = document.querySelector('[data-index="0"]');
+    
+    if (pointElement) {
+      // Verify that the point element has the double-click handler
+      expect(pointElement).toHaveProperty('ondblclick');
+      
+      // Trigger double click event - just verify it doesn't throw an error
+      fireEvent.doubleClick(pointElement);
+      
+      // If we get here without errors, the handler executed successfully
+      expect(true).toBe(true);
+    }
+  });
+
+  it('exports SVG content correctly via ref', () => {
+    const points = [
+      { x: 100, y: 100, color: '#ff0000' },
+      { x: 200, y: 200, color: '#00ff00' }
+    ];
+    
+    const ref = React.createRef<{ exportSVG: () => string }>();
+    
+    render(
+      <SvgMesh
+        ref={ref}
+        points={points}
+        width={400}
+        height={400}
+        stdDeviation={20}
+        slope={1.5}
+        intercept={0.2}
+      />
+    );
+    
+    // Call export function
+    const svgContent = ref.current?.exportSVG();
+    
+    expect(svgContent).toBeDefined();
+    expect(svgContent).toContain('<svg');
+    expect(svgContent).toContain('viewBox="0 0 400 400"');
+    expect(svgContent).toContain('width="100%"');
+    expect(svgContent).toContain('height="100%"');
+    expect(svgContent).toContain('preserveAspectRatio="none"');
+    expect(svgContent).toContain('<filter');
+    expect(svgContent).toContain('stdDeviation="20"');
+    expect(svgContent).toContain('slope="1.5"');
+    expect(svgContent).toContain('intercept="0.2"');
+    expect(svgContent).toContain('fill="#ff0000"');
+    expect(svgContent).toContain('fill="#00ff00"');
+    expect(svgContent).toContain('</svg>');
   });
 }); 

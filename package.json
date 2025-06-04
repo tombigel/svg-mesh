@@ -1,6 +1,6 @@
 {
-  "name": "svg-mesh",
-  "description": "A React library for creating interactive Voronoi gradient meshes using SVG, d3-delaunay, and CSS filters",
+  "name": "svg-gradient-mesh",
+  "description": "Gradient mesh emulation library using SVG Voronoi surfaces and advanced SVG filters for smooth color transitions",
   "homepage": "https://tombigel.github.io/svg-mesh",
   "version": "0.1.0",
   "private": true,
@@ -69,9 +69,13 @@
   },
   "keywords": [
     "svg",
+    "gradient-mesh",
     "voronoi",
     "mesh",
     "gradient",
+    "svg-filters",
+    "color-transitions",
+    "artistic-effects",
     "react",
     "typescript"
   ],

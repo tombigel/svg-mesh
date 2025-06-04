@@ -11,5 +11,5 @@ export interface SvgMeshProps {
   onPointsChange?: (points: Point[]) => void;
   onSelectedChange?: (selected: number) => void;
   className?: string;
-  style?: Record<string, any>;
+  style?: React.CSSProperties;
 }

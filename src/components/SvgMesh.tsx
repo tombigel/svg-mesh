@@ -13,7 +13,10 @@ const getCalculatedOffsets = (
   return { offsetX, offsetY };
 };
 
-export const SvgMesh: React.FC<SvgMeshProps> = ({
+export const SvgMesh = React.forwardRef<
+  { exportSVG: () => string },
+  SvgMeshProps
+>(({
   points,
   width,
   height,
@@ -25,7 +28,7 @@ export const SvgMesh: React.FC<SvgMeshProps> = ({
   onSelectedChange,
   className,
   style,
-}) => {
+}, ref) => {
   const [selected, setSelected] = React.useState(0);
   const selectedMemo = React.useRef(selected);
   
@@ -113,6 +116,49 @@ export const SvgMesh: React.FC<SvgMeshProps> = ({
     [handleMove, points, selected, onPointsChange, interactive]
   );
 
+  const handleDoubleClick = React.useCallback(
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      if (!interactive || !onPointsChange) return;
+      
+      const element = event.target as HTMLElement;
+      if (!element.hasAttribute('data-index')) return;
+      
+      const { index = "0" } = element.dataset;
+      const pointIndex = +index;
+      
+      // Create a temporary input element to trigger the color picker
+      const colorInput = document.createElement('input');
+      colorInput.type = 'color';
+      colorInput.value = points[pointIndex].color;
+      colorInput.style.position = 'absolute';
+      colorInput.style.left = '-9999px';
+      colorInput.style.opacity = '0';
+      colorInput.style.pointerEvents = 'none';
+      
+      document.body.appendChild(colorInput);
+      
+      colorInput.addEventListener('change', (e) => {
+        const newColor = (e.target as HTMLInputElement).value;
+        const newPoints = [...points];
+        newPoints[pointIndex] = { ...newPoints[pointIndex], color: newColor };
+        onPointsChange(newPoints);
+        document.body.removeChild(colorInput);
+      });
+      
+      colorInput.addEventListener('blur', () => {
+        // Clean up if user cancels
+        if (document.body.contains(colorInput)) {
+          document.body.removeChild(colorInput);
+        }
+      });
+      
+      // Trigger the color picker
+      colorInput.click();
+      colorInput.focus();
+    },
+    [points, onPointsChange, interactive]
+  );
+
   const meshStyles: React.CSSProperties = {
     position: 'relative',
     width,
@@ -146,10 +192,39 @@ export const SvgMesh: React.FC<SvgMeshProps> = ({
     boxShadow: '0 0 0 2px #0d6efd, 0 4px 12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.9)',
     zIndex: 10,
     transform: 'translate(-50%, -50%) scale(1.1)',
+    cursor: interactive ? 'move' : 'default',
   };
 
   // Generate a consistent filter ID
   const filterId = React.useMemo(() => `blur-${crypto.randomUUID()}`, []);
+
+  // Export utility function
+  const exportSVG = React.useCallback(() => {
+    const svgContent = `<svg viewBox="0 0 ${width} ${height}" width="100%" height="100%" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="${filterId}">
+      <feConvolveMatrix order="3" kernelMatrix="0 0 0 0 1 0 0 1 0"/>
+      <feGaussianBlur in="SourceGraphic" result="Blurred" stdDeviation="${stdDeviation}"/>
+      <feComponentTransfer in="Blurred" result="NonBlurred">
+        <feFuncR type="linear" slope="${slope}" intercept="${intercept}"/>
+        <feFuncG type="linear" slope="${slope}" intercept="${intercept}"/>
+        <feFuncB type="linear" slope="${slope}" intercept="${intercept}"/>
+        <feFuncA type="discrete" tableValues="1"/>
+      </feComponentTransfer>
+    </filter>
+  </defs>
+  <g filter="url(#${filterId})">
+${paths.map((path, index) => `    <path d="${path}" fill="${points[index]?.color || '#000000'}"/>`).join('\n')}
+  </g>
+</svg>`;
+    
+    return svgContent;
+  }, [width, height, filterId, stdDeviation, slope, intercept, paths, points]);
+
+  // Expose export function via ref
+  React.useImperativeHandle(ref, () => ({
+    exportSVG
+  }), [exportSVG]);
 
   return (
     <div 
@@ -192,6 +267,7 @@ export const SvgMesh: React.FC<SvgMeshProps> = ({
         <div
           key={`point-${index}`}
           data-index={index}
+          onDoubleClick={handleDoubleClick}
           style={{
             ...(index === selected ? selectedPointStyles : pointStyles),
             left: `${point.x}px`,
@@ -201,4 +277,4 @@ export const SvgMesh: React.FC<SvgMeshProps> = ({
       ))}
     </div>
   );
-}; 
+}); 

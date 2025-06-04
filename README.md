@@ -1,12 +1,12 @@
-# SVG Mesh
+# SVG Gradient Mesh
 
-A React library for creating interactive Voronoi gradient meshes using SVG, d3-delaunay, and CSS filters.
+A React library for gradient mesh emulation using SVG Voronoi surfaces and advanced SVG filters. Create smooth color transitions and artistic effects through interactive point manipulation, real-time mesh generation, and sophisticated blur and color transfer operations.
 
-## 🚀 Demo
+## Demo
 
 **Live Demo:** [https://tombigel.github.io/svg-mesh/](https://tombigel.github.io/svg-mesh/)
 
-## 📦 Installation
+## Installation
 
 This package is currently in development. To use it in your project:
 
@@ -19,10 +19,10 @@ npm run build:lib
 
 Then copy the `dist/` folder to your project or reference the source files directly.
 
-## 🎯 Usage
+## Usage
 
 ```tsx
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { SvgMesh, Point } from 'svg-mesh';
 
 function App() {
@@ -32,22 +32,74 @@ function App() {
     { x: 300, y: 150, color: '#0000ff' },
   ]);
 
+  const svgMeshRef = useRef<{ exportSVG: () => string }>(null);
+
+  const handleExport = () => {
+    if (svgMeshRef.current) {
+      const svgContent = svgMeshRef.current.exportSVG();
+      console.log(svgContent); // Use the exported SVG
+    }
+  };
+
   return (
-    <SvgMesh
-      points={points}
-      width={400}
-      height={400}
-      onPointsChange={setPoints}
-      interactive={true}
-      stdDeviation={40}
-      slope={1}
-      intercept={0}
-    />
+    <div>
+      <SvgMesh
+        ref={svgMeshRef}
+        points={points}
+        width={400}
+        height={400}
+        onPointsChange={setPoints}
+        interactive={true}
+        stdDeviation={40}
+        slope={1}
+        intercept={0}
+      />
+      <button onClick={handleExport}>Export SVG</button>
+    </div>
   );
 }
 ```
 
-## 🔧 API
+## Interactive Features
+
+When `interactive={true}`:
+
+- **Click empty area**: Add new points to the mesh
+- **Drag points**: Move points to reshape the mesh  
+- **Select points**: Click to select for color/position editing via controls
+
+The component provides intuitive direct manipulation of the mesh right on the canvas.
+
+## Export Functionality
+
+The `SvgMesh` component supports exporting the generated mesh as standalone SVG code:
+
+### Using Refs
+
+```tsx
+const svgMeshRef = useRef<{ exportSVG: () => string }>(null);
+
+// Export the current mesh state
+const svgContent = svgMeshRef.current?.exportSVG();
+```
+
+### Export Features
+
+- **On-demand Generation**: SVG is generated on-the-fly when export functions are called
+- **Standalone SVG**: Exports complete SVG with embedded filters
+- **Current State**: Captures current points, colors, and filter settings
+- **Consistent IDs**: Uses stable filter IDs for reliable rendering
+- **Direct Actions**: Demo includes direct copy to clipboard and download buttons
+
+The exported SVG includes:
+
+- Voronoi mesh paths with current colors
+- SVG filter definitions (blur, color transfer)
+- Proper viewBox and dimensions with `width="100%"` and `height="100%"`
+- `preserveAspectRatio="none"` for flexible scaling
+- All current filter parameters (stdDeviation, slope, intercept)
+
+## API
 
 ### SvgMesh Props
 
@@ -75,7 +127,7 @@ type Point = {
 };
 ```
 
-## 🛠️ Development
+## Development
 
 ### Prerequisites
 
@@ -123,7 +175,7 @@ svg-mesh/
 └── docs/                  # Documentation
 ```
 
-## 🧪 Testing
+## Testing
 
 The project uses Vitest for testing with jsdom environment:
 
@@ -133,7 +185,7 @@ npm run test:watch     # Run tests in watch mode
 npm run test:coverage  # Run tests with coverage report
 ```
 
-## 📦 Building
+## Building
 
 ### Library Build
 
@@ -155,7 +207,7 @@ npm run build:demo
 
 Generates static files in `build/` for deployment.
 
-## 🚀 Deployment
+## Deployment
 
 The demo is automatically deployed to GitHub Pages:
 
@@ -163,11 +215,11 @@ The demo is automatically deployed to GitHub Pages:
 npm run deploy
 ```
 
-## 📄 License
+## License
 
 MIT
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -176,7 +228,7 @@ MIT
 5. Run tests and ensure they pass
 6. Submit a pull request
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - [d3-delaunay](https://github.com/d3/d3-delaunay) for Voronoi diagram generation
 - [Vite](https://vitejs.dev) for build tooling
